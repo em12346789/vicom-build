@@ -25,6 +25,9 @@ jobs:
             libsdl2-dev \
             libsdl2-ttf-dev
 
+      - name: CD
+        run: cd video-compare
+
       - name: Build
         run: make
 

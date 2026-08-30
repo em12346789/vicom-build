@@ -1,45 +1,40 @@
-name: Build Linux Binary
+name: Build Linux
 
 on:
-  workflow_dispatch: # Allows you to trigger the build manually with a single click
+  workflow_dispatch:
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-24.04
 
     steps:
-      # Step 1: Check out your own repo (required by GitHub Actions structure)
-      - name: Checkout local repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # Step 2: Clone the official video-compare source code
-      - name: Clone video-compare repository
-        run: |
-          git clone https://github.com/pixop/video-compare.git
-
-      # Step 3: Install all mandatory Ubuntu dependencies needed to build the app
-      - name: Install system dependencies
+      - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
             build-essential \
-            libsdl2-dev \
-            libsdl2-ttf-dev \
-            libavcodec-dev \
             libavformat-dev \
-            libswscale-dev \
+            libavcodec-dev \
+            libavfilter-dev \
             libavutil-dev \
-            libswresample-dev
+            libswscale-dev \
+            libswresample-dev \
+            libsdl2-dev \
+            libsdl2-ttf-dev
 
-      # Step 4: Compile the binary using the project's default Makefile
-      - name: Compile video-compare
+      - name: Build
+        run: make
+
+      - name: Verify binary
         run: |
-          cd video-compare
-          make
+          file video-compare
+          ./video-compare --help
 
-      # Step 5: Package and upload the freshly built executable as an artifact
-      - name: Upload compiled binary
+      - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: video-compare-linux-amd64
-          path: video-compare/video-compare
+          name: video-compare-linux-x86_64
+          path: video-compare

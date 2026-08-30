@@ -29,6 +29,7 @@ jobs:
         run: |
           git clone https://github.com/pixop/video-compare.git
           cd video-compare
+          ls
 
       - name: Build
         run: make
